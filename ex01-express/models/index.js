@@ -1,7 +1,10 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-dotenv.config();
+// Apenas executa o dotenv.config() se não estivermos em produção
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
