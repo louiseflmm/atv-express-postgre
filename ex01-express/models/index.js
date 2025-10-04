@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import pg from "pg"; // <-- ADICIONE ESTA LINHA
 
 // Apenas executa o dotenv.config() se não estivermos em produção
 if (process.env.NODE_ENV !== 'production') {
@@ -13,7 +14,8 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT || "postgres",
+    dialect: "postgres", // Definido diretamente como postgres
+    dialectModule: pg,   // <-- ADICIONE ESTA LINHA
     dialectOptions: {
       ssl: {
         require: true,
