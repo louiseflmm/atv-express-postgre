@@ -1,17 +1,30 @@
 import express from "express";
 import sequelize from "./models/index.js";
-import usersRoutes from "./routes/users.routes.js";
-import messagesRoutes from "./routes/messages.routes.js";
+import routes from "./routes/index.js"; // Importa o roteador principal
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
 app.use(express.json());
 
-app.use("/users", usersRoutes);
-app.use("/messages", messagesRoutes);
+// Rotas
+app.use("/api", routes); // Todas as rotas terão o prefixo /api
 
-sequelize.sync().then(() => console.log("Banco sincronizado 🚀"));
+// Rota raiz de boas-vindas
+app.get("/", (req, res) => res.send("API com Express e PostgreSQL rodando! 🚀"));
 
-app.get("/", (req, res) => res.send("API rodando 🚀"));
+// Sincroniza o banco e inicia o servidor
+const startServer = async () => {
+  try {
+    await sequelize.sync();
+    console.log("Banco de dados sincronizado com sucesso. 🚀");
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Não foi possível conectar ao banco de dados:", error);
+  }
+};
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+startServer();

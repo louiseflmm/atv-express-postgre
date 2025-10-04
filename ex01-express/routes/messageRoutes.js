@@ -8,14 +8,13 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { userId, content } = req.body;
-
     const user = await User.findByPk(userId);
-    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
-
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
     const message = await Message.create({ userId, content });
-    res.status(201).json(message); // 201
+    res.status(201).json(message);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Erro ao criar mensagem" });
   }
 });
@@ -34,7 +33,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const message = await Message.findByPk(req.params.id, { include: User });
-    if (!message) return res.status(404).json({ error: "Mensagem não encontrada" });
+    if (!message) {
+      return res.status(404).json({ error: "Mensagem não encontrada" });
+    }
     res.json(message);
   } catch (error) {
     res.status(500).json({ error: "Erro ao buscar mensagem" });
@@ -45,8 +46,9 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const message = await Message.findByPk(req.params.id);
-    if (!message) return res.status(404).json({ error: "Mensagem não encontrada" });
-
+    if (!message) {
+      return res.status(404).json({ error: "Mensagem não encontrada" });
+    }
     await message.update(req.body);
     res.json(message);
   } catch (error) {
@@ -58,10 +60,11 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const message = await Message.findByPk(req.params.id);
-    if (!message) return res.status(404).json({ error: "Mensagem não encontrada" });
-
+    if (!message) {
+      return res.status(404).json({ error: "Mensagem não encontrada" });
+    }
     await message.destroy();
-    res.sendStatus(204); // 204
+    res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ error: "Erro ao excluir mensagem" });
   }
