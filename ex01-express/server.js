@@ -1,30 +1,26 @@
 import express from "express";
 import sequelize from "./models/index.js";
-import routes from "./routes/index.js"; // Importa o roteador principal
+import routes from "./routes/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json());
 
 // Rotas
-app.use("/api", routes); // Todas as rotas terão o prefixo /api
+app.use("/api", routes);
 
-// Rota raiz de boas-vindas
-app.get("/", (req, res) => res.send("API com Express e PostgreSQL rodando! 🚀"));
+// Rota raiz
+app.get("/", (req, res) => {
+  res.send("API com Express e PostgreSQL rodando!");
+});
 
-// Sincroniza o banco e inicia o servidor
-const startServer = async () => {
-  try {
-    await sequelize.sync();
-    console.log("Banco de dados sincronizado com sucesso. 🚀");
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Não foi possível conectar ao banco de dados:", error);
-  }
-};
+// Sincroniza o banco de dados
+sequelize.sync().then(() => {
+  console.log("Banco de dados sincronizado com sucesso.");
+}).catch((error) => {
+  console.error("Não foi possível sincronizar o banco de dados:", error);
+});
 
-startServer();
+// Exporta o app para a Vercel usar
+export default app;
